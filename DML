@@ -1,0 +1,322 @@
+-- DML - Sistema Gestione Parchi
+-- Inserimento dati di esempio
+
+-- =====================================================
+-- INSERIMENTO PARCHI
+-- =====================================================
+
+INSERT INTO PARCHI (ID, Nome_parco, Tipologia, Ente_Gestore, Regione, Superficie_terrestre, Superficie_marina, Provvedimento_istitutivo, Km_costa) VALUES
+(1, 'Parco Nazionale del Gran Paradiso', 'parco nazionale', 'Ministero dell''Ambiente', 'Valle d''Aosta', 70318.00, 0.00, 'Decreto Reale n. 1584 del 1922', 0.00),
+(2, 'Parco Nazionale delle Cinque Terre', 'parco nazionale', 'Ministero dell''Ambiente', 'Liguria', 3860.00, 4591.00, 'Decreto del Presidente della Repubblica del 1999', 18.00),
+(3, 'Riserva Naturale dello Zingaro', 'riserva naturale', 'regione', 'Sicilia', 1650.00, 400.00, 'Decreto Assessoriale del 1981', 7.00),
+(4, 'Parco Nazionale d''Abruzzo', 'parco nazionale', 'ente di gestione di aree protette', 'Abruzzo', 50683.00, 0.00, 'Decreto Reale del 1923', 0.00),
+(5, 'Riserva Naturale delle Valli di Argenta', 'riserva naturale', 'provincia', 'Emilia-Romagna', 2007.00, 0.00, 'Decreto Provinciale del 1981', 0.00),
+(6, 'Parco Nazionale del Vesuvio', 'parco nazionale', 'ente di gestione di aree protette', 'Campania', 8482.00, 0.00, 'Decreto del Presidente della Repubblica del 1995', 0.00);
+
+-- =====================================================
+-- INSERIMENTO VISITATORI
+-- =====================================================
+
+INSERT INTO VISITATORI (Username, Password, Tipologia) VALUES
+('mario.rossi', 'hashed_password_1', 'utente registrato'),
+('giulia.verdi', 'hashed_password_2', 'famiglia'),
+('luca.bianchi', 'hashed_password_3', 'gruppo'),
+('anna.ferrari', 'hashed_password_4', 'studente'),
+('paolo.esposito', 'hashed_password_5', 'ricercatore'),
+('sara.conti', 'hashed_password_6', 'fotografo'),
+('marco.ricci', 'hashed_password_7', 'escursionista'),
+('elena.costa', 'hashed_password_8', 'naturalista'),
+('davide.marini', 'hashed_password_9', 'turista'),
+('chiara.lombardi', 'hashed_password_10', 'famiglia');
+
+-- =====================================================
+-- INSERIMENTO GUIDE AUTORIZZATE
+-- =====================================================
+
+INSERT INTO GUIDE_AUTORIZZATE (COD, Nome, Cognome, Media_valutazione) VALUES
+(1, 'Giuseppe', 'Montanari', 4.8),
+(2, 'Laura', 'Pinelli', 4.5),
+(3, 'Andrea', 'Selvaggio', 4.9),
+(4, 'Francesca', 'Torretti', 4.2),
+(5, 'Roberto', 'Castelli', 4.7),
+(6, 'Maria', 'Fontana', 4.6),
+(7, 'Antonio', 'Valli', 4.3),
+(8, 'Silvia', 'Monti', 4.8);
+
+-- =====================================================
+-- INSERIMENTO ITINERARI
+-- =====================================================
+
+INSERT INTO ITINERARI (ID, Media_valutazione, Numero_guide_abilitate, Tempo_stimato, Modalita_percorrenza, Punto_partenza, Livello_difficolta, ID_parco) VALUES
+(1, 4.5, 3, 180, 'a piedi', 'Centro Visitatori Ceresole', 'medio', 1),
+(2, 4.8, 2, 240, 'a piedi', 'Rifugio Vittorio Emanuele II', 'difficile', 1),
+(3, 4.2, 4, 120, 'a piedi', 'Stazione Monterosso', 'facile', 2),
+(4, 4.6, 3, 300, 'a piedi', 'Riomaggiore', 'medio', 2),
+(5, 4.4, 2, 90, 'a piedi', 'Ingresso Scopello', 'facile', 3),
+(6, 4.7, 1, 150, 'a piedi', 'Cala Tonnarella', 'medio', 3),
+(7, 4.3, 5, 360, 'a piedi', 'Pescasseroli', 'difficile', 4),
+(8, 4.1, 2, 180, 'a piedi', 'Valle dell''Orso', 'medio', 4);
+
+-- =====================================================
+-- INSERIMENTO CENTRI VISITA
+-- =====================================================
+
+INSERT INTO CENTRI_VISITA (COD, Nome_centro, Luogo, Orario_apertura, Orario_chiusura, Email, Num_telefono, Percorsi, Visite, ID_parco) VALUES
+(1, 'Centro Visitatori Gran Paradiso', 'Ceresole Reale', '08:30:00', '17:30:00', 'info.ceresole@pngp.it', '+39 0124 901070', 'Sentiero natura, Via ferrata', 'Visite guidate giornaliere', 1),
+(2, 'Centro Visitatori Cinque Terre', 'Monterosso al Mare', '09:00:00', '18:00:00', 'info@parconazionale5terre.it', '+39 0187 760000', 'Sentiero Azzurro, Alta Via', 'Tour enogastronomici, Escursioni botaniche', 2),
+(3, 'Centro Visitatori Zingaro', 'Scopello', '08:00:00', '19:00:00', 'zingaro@regione.sicilia.it', '+39 0924 35108', 'Sentiero costiero, Sentiero botanico', 'Visite naturalistiche, Birdwatching', 3),
+(4, 'Centro Visitatori Abruzzo', 'Pescasseroli', '08:30:00', '17:00:00', 'info@parcoabruzzo.it', '+39 0863 9113', 'Sentiero dell''Orso, Valle di Rose', 'Osservazione fauna, Fotografia naturalistica', 4);
+
+-- =====================================================
+-- INSERIMENTO TOUR PROGRAMMATI
+-- =====================================================
+
+INSERT INTO TOUR_PROGRAMMATI (Orario, Anno, Num_massimo_partecipanti, Stato, COD_guida, ID_itinerario) VALUES
+('09:00:00', 2024, 15, 'confermato', 1, 1),
+('14:30:00', 2024, 12, 'confermato', 2, 2),
+('10:00:00', 2024, 20, 'disponibile', 3, 3),
+('15:00:00', 2024, 18, 'confermato', 4, 4),
+('08:30:00', 2024, 10, 'disponibile', 5, 5),
+('16:00:00', 2024, 8, 'confermato', 6, 6),
+('07:00:00', 2024, 12, 'disponibile', 7, 7),
+('13:00:00', 2024, 15, 'confermato', 8, 8);
+
+-- =====================================================
+-- INSERIMENTO STRUTTURE RICETTIVE
+-- =====================================================
+
+INSERT INTO STRUTTURE_RICETTIVE (ID, Nome_struttura, Indirizzo, Adesione_CETS, Disponibilita_parcheggi, Scuola, Gruppi, Email, Num_telefono, ID_parco) VALUES
+(1, 'Hotel Gran Paradiso', 'Via Roma 45, Ceresole Reale', TRUE, TRUE, TRUE, TRUE, 'info@hotelgranparadiso.it', '+39 0124 953100', 1),
+(2, 'Rifugio Savoia', 'Località Pont, Valsavarenche', FALSE, TRUE, FALSE, TRUE, 'rifugiosavoia@gmail.com', '+39 0165 95666', 1),
+(3, 'Hotel Porto Roca', 'Via Corone 1, Monterosso', TRUE, FALSE, TRUE, TRUE, 'info@portoroca.it', '+39 0187 817502', 2),
+(4, 'La Torretta Lodge', 'Via Pecunia 19, Manarola', TRUE, FALSE, FALSE, FALSE, 'info@latorretta.com', '+39 0187 920327', 2),
+(5, 'Baglio Santacroce', 'Contrada Guidaloca, Scopello', FALSE, TRUE, TRUE, TRUE, 'info@bagliosantacroce.it', '+39 0924 541991', 3),
+(6, 'Hotel Villa Pina', 'Via Pescasseroli 2, Pescasseroli', TRUE, TRUE, TRUE, TRUE, 'info@villapina.it', '+39 0863 910356', 4);
+
+-- =====================================================
+-- INSERIMENTO NOTIZIE
+-- =====================================================
+
+INSERT INTO NOTIZIE (COD, Data, Foto, Testo, ID_parco) VALUES
+(1, '2024-01-15', 'stambecco_inverno.jpg', 'Avvistamento eccezionale di un branco di 15 stambecchi nella zona del Colle del Nivolet. Gli esemplari sono stati osservati durante le prime ore del mattino.', 1),
+(2, '2024-01-20', 'cinque_terre_temporale.jpg', 'Chiusura temporanea del Sentiero Azzurro tra Monterosso e Vernazza a causa delle forti piogge. Riapertura prevista per il 25 gennaio.', 2),
+(3, '2024-01-22', 'zingaro_pulizia.jpg', 'Completata l''operazione di pulizia straordinaria delle spiagge della riserva. Rimossi oltre 200 kg di rifiuti plastici.', 3),
+(4, '2024-01-25', 'orso_abruzzo.jpg', 'Nuovo cucciolo di orso bruno marsicano avvistato in Val di Rose. È il quarto nato quest''anno nella popolazione del parco.', 4),
+(5, '2024-01-28', 'vesuvio_escursione.jpg', 'Aperte le iscrizioni per le escursioni guidate notturne al cratere del Vesuvio. Disponibili solo nei weekend di febbraio.', 6);
+
+-- =====================================================
+-- VERIFICA E INSERIMENTO VISITATORI (se necessario)
+-- =====================================================
+
+-- Inserisci i visitatori se non sono già presenti
+INSERT INTO VISITATORI (Username, Password, Tipologia) VALUES
+('mario.rossi', 'hashed_password_1', 'utente registrato'),
+('giulia.verdi', 'hashed_password_2', 'famiglia'),
+('luca.bianchi', 'hashed_password_3', 'gruppo'),
+('anna.ferrari', 'hashed_password_4', 'studente'),
+('paolo.esposito', 'hashed_password_5', 'ricercatore'),
+('sara.conti', 'hashed_password_6', 'fotografo'),
+('marco.ricci', 'hashed_password_7', 'escursionista'),
+('elena.costa', 'hashed_password_8', 'naturalista'),
+('davide.marini', 'hashed_password_9', 'turista'),
+('chiara.lombardi', 'hashed_password_10', 'famiglia')
+ON CONFLICT (Username) DO NOTHING;
+
+-- =====================================================
+-- INSERIMENTO RICHIESTE PRENOTAZIONE
+-- =====================================================
+
+INSERT INTO RICHIESTE_PRENOTAZIONE (ID, Data_inizio_soggiorno, Data_fine_soggiorno, Num_ospiti, Stato_accettazione, Username, ID_struttura) VALUES
+(1, '2025-09-15', '2025-09-18', 2, 'accettata', 'mario.rossi', 1),
+(2, '2025-10-10', '2025-10-12', 4, 'in attesa', 'giulia.verdi', 3),
+(3, '2025-11-20', '2025-11-22', 1, 'accettata', 'luca.bianchi', 2),
+(4, '2025-12-01', '2025-12-05', 3, 'rifiutata', 'anna.ferrari', 4),
+(5, '2026-01-15', '2026-01-17', 2, 'accettata', 'paolo.esposito', 5),
+(6, '2026-02-10', '2026-02-15', 6, 'in attesa', 'sara.conti', 6),
+(7, '2026-03-05', '2026-03-08', 2, 'accettata', 'marco.ricci', 1);
+
+-- =====================================================
+-- INSERIMENTO PRESENZE
+-- =====================================================
+
+INSERT INTO PRESENZE (COD, Tipologia_utente, Orario_entrata, Orario_uscita, Data, Username, ID_parco) VALUES
+(1, 'famiglia', '09:00:00', '17:30:00', '2024-01-10', 'mario.rossi', 1),
+(2, 'gruppo', '08:30:00', '16:00:00', '2024-01-12', 'giulia.verdi', 2),
+(3, 'studente', '10:00:00', '15:30:00', '2024-01-15', 'anna.ferrari', 3),
+(4, 'ricercatore', '07:00:00', '19:00:00', '2024-01-18', 'paolo.esposito', 4),
+(5, 'fotografo', '06:30:00', '18:30:00', '2024-01-20', 'sara.conti', 1),
+(6, 'escursionista', '08:00:00', '16:30:00', '2024-01-22', 'marco.ricci', 2),
+(7, 'naturalista', '09:30:00', '17:00:00', '2024-01-25', 'elena.costa', 3);
+
+-- =====================================================
+-- INSERIMENTO VALUTAZIONI
+-- =====================================================
+
+INSERT INTO VALUTAZIONI (ID, Commento, Punteggio, Username, COD_guida, ID_itinerario) VALUES
+(1, 'Esperienza fantastica! La guida era molto preparata e ha saputo trasmettere la passione per la natura.', 5, 'mario.rossi', 1, 1),
+(2, 'Tour interessante ma un po'' troppo impegnativo per i bambini.', 4, 'giulia.verdi', 3, 3),
+(3, 'Guida professionale, percorso ben organizzato. Consigliato!', 5, 'luca.bianchi', 2, 2),
+(4, 'Bellissimo itinerario, peccato per il tempo limitato a disposizione.', 4, 'anna.ferrari', 4, 4),
+(5, 'Eccellente conoscenza della flora locale. Tour molto educativo.', 5, 'paolo.esposito', 5, 5),
+(6, 'Buona esperienza nel complesso, qualche problema di organizzazione.', 3, 'sara.conti', 6, 6),
+(7, 'Tour impegnativo ma gratificante. Paesaggi mozzafiato!', 5, 'marco.ricci', 7, 7);
+
+-- =====================================================
+-- INSERIMENTO SEGNALETICA
+-- =====================================================
+
+INSERT INTO SEGNALETICA (ID, Tipo_segnaletica, ID_itinerario) VALUES
+(1, 'Cartello informativo flora', 1),
+(2, 'Segnaletica di sicurezza', 1),
+(3, 'Pannello interpretativo fauna', 2),
+(4, 'Cartello direzionale', 3),
+(5, 'Pannello storico-culturale', 3),
+(6, 'Segnaletica di pericolo', 4),
+(7, 'Cartello informativo geologico', 5),
+(8, 'Pannello didattico marino', 6),
+(9, 'Segnaletica percorso', 7),
+(10, 'Cartello area protetta', 8);
+
+-- =====================================================
+-- INSERIMENTO RELAZIONI MOLTI-A-MOLTI
+-- =====================================================
+
+-- EFFETTUANO (visitatori che prenotano tour)
+INSERT INTO EFFETTUANO (Username, Orario, Anno, Data_prenotazione) VALUES
+('mario.rossi', '09:00:00', 2024, '2024-01-05'),
+('giulia.verdi', '10:00:00', 2024, '2024-01-08'),
+('luca.bianchi', '14:30:00', 2024, '2024-01-10'),
+('anna.ferrari', '15:00:00', 2024, '2024-01-12'),
+('paolo.esposito', '08:30:00', 2024, '2024-01-15'),
+('sara.conti', '16:00:00', 2024, '2024-01-18'),
+('marco.ricci', '07:00:00', 2024, '2024-01-20');
+
+-- ABILITATE (guide autorizzate per itinerari)
+INSERT INTO ABILITATE (ID_itinerario, COD_guida) VALUES
+(1, 1), (1, 2), (1, 3),
+(2, 1), (2, 2),
+(3, 3), (3, 4), (3, 5), (3, 6),
+(4, 4), (4, 5), (4, 6),
+(5, 5), (5, 7),
+(6, 6),
+(7, 7), (7, 8), (7, 1), (7, 2), (7, 3),
+(8, 8), (8, 7);
+
+-- ALLOGGIANO (visitatori che alloggiano in strutture)
+INSERT INTO ALLOGGIANO (ID_struttura, Username) VALUES
+(1, 'mario.rossi'),
+(2, 'luca.bianchi'),
+(3, 'giulia.verdi'),
+(4, 'anna.ferrari'),
+(5, 'paolo.esposito'),
+(6, 'sara.conti'),
+(1, 'marco.ricci'),
+(3, 'elena.costa');
+
+-- SEGUE (strutture che seguono impegni ecologici)
+INSERT INTO SEGUE (ID_struttura, Nome_impegno) VALUES
+(1, 'Riduzione emissioni CO2'),
+(1, 'Utilizzo energia rinnovabile'),
+(2, 'Gestione sostenibile rifiuti'),
+(3, 'Riduzione emissioni CO2'),
+(3, 'Promozione mobilità sostenibile'),
+(4, 'Utilizzo energia rinnovabile'),
+(5, 'Educazione ambientale'),
+(6, 'Gestione sostenibile rifiuti');
+
+-- OFFRE (strutture che offrono servizi)
+INSERT INTO OFFRE (ID_struttura, Nome_servizio) VALUES
+(1, 'Ristorante'), (1, 'Parcheggio'), (1, 'Wi-Fi'),
+(2, 'Bar'), (2, 'Area picnic'),
+(3, 'Ristorante'), (3, 'Bar'), (3, 'Wi-Fi'),
+(4, 'Bar'), (4, 'Wi-Fi'),
+(5, 'Ristorante'), (5, 'Parcheggio'), (5, 'Area picnic'),
+(6, 'Ristorante'), (6, 'Bar'), (6, 'Parcheggio'), (6, 'Wi-Fi');
+
+-- ADOTTANO (strutture che adottano trattamenti)
+INSERT INTO ADOTTANO (Nome_trattamenti, ID_struttura) VALUES
+('Raccolta differenziata', 1),
+('Energia rinnovabile', 1),
+('Prodotti biologici', 1),
+('Raccolta differenziata', 3),
+('Riduzione sprechi', 3),
+('Energia rinnovabile', 4),
+('Compostaggio', 5),
+('Raccolta differenziata', 6),
+('Prodotti biologici', 6);
+
+-- EROGANO (centri visita che erogano servizi)
+INSERT INTO EROGANO (COD_centro, Nome_servizio) VALUES
+(1, 'Visite guidate'), (1, 'Shop souvenir'), (1, 'Parcheggio'),
+(2, 'Visite guidate'), (2, 'Shop souvenir'), (2, 'Bar'),
+(3, 'Visite guidate'), (3, 'Area picnic'),
+(4, 'Visite guidate'), (4, 'Shop souvenir'), (4, 'Parcheggio'), (4, 'Wi-Fi');
+
+-- POSSIEDONO (guide che possiedono licenze)
+INSERT INTO POSSIEDONO (COD_guida, Nome_licenza) VALUES
+(1, 'Guida ambientale escursionistica'),
+(1, 'Accompagnatore naturalistico'),
+(2, 'Guida ambientale escursionistica'),
+(3, 'Accompagnatore naturalistico'),
+(3, 'Istruttore di canoa'),
+(4, 'Guida ambientale escursionistica'),
+(5, 'Guida speleologica'),
+(6, 'Accompagnatore naturalistico'),
+(7, 'Guida alpina'),
+(7, 'Guida ambientale escursionistica'),
+(8, 'Accompagnatore naturalistico');
+
+-- DISPONE_DI (parchi che dispongono di certificazioni)
+INSERT INTO DISPONE_DI (Nome_certificazione, ID_parco) VALUES
+('CETS', 1),
+('CETS', 2),
+('IUCN green list', 1),
+('CETS', 4),
+('CETS', 6);
+
+-- ORGANIZZANO (guide che organizzano tour)
+INSERT INTO ORGANIZZANO (COD_guida, Orario, Anno) VALUES
+(1, '09:00:00', 2024),
+(2, '14:30:00', 2024),
+(3, '10:00:00', 2024),
+(4, '15:00:00', 2024),
+(5, '08:30:00', 2024),
+(6, '16:00:00', 2024),
+(7, '07:00:00', 2024),
+(8, '13:00:00', 2024);
+
+-- INFORMANO (notizie che informano sui parchi)
+INSERT INTO INFORMANO (COD_notizie, ID_parco) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 6);
+
+-- INVIA (visitatori che inviano richieste)
+INSERT INTO INVIA (Username, ID_richiesta) VALUES
+('mario.rossi', 1),
+('giulia.verdi', 2),
+('luca.bianchi', 3),
+('anna.ferrari', 4),
+('paolo.esposito', 5),
+('sara.conti', 6),
+('marco.ricci', 7);
+
+-- SI_POSSONO_CONSULTARE (parchi dove si possono consultare itinerari)
+INSERT INTO SI_POSSONO_CONSULTARE (ID_parco, ID_itinerario) VALUES
+(1, 1), (1, 2),
+(2, 3), (2, 4),
+(3, 5), (3, 6),
+(4, 7), (4, 8);
+
+-- CONTIENE (itinerari che contengono segnaletica)
+INSERT INTO CONTIENE (ID_segnaletica, ID_itinerario) VALUES
+(1, 1), (2, 1),
+(3, 2),
+(4, 3), (5, 3),
+(6, 4),
+(7, 5),
+(8, 6),
+(9, 7),
+(10, 8);

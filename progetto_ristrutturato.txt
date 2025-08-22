@@ -1,0 +1,194 @@
+/* Entities */
+entity PARCHI {
+    Tipologia,
+    Ente_Gestore,
+    Regione,
+    Superficie_terrestre,
+    Nome_parco,
+    Superficie_marina,
+    provvedimento_istitutivo,
+    Km_costa,
+    ID (id)
+}
+entity CENTRI_VISITA {
+    Orario_apertura,
+    Luogo,
+    Orario_chiusura,
+    Nome_centro,
+    Email,
+    Num_telefono,
+    Percorsi,
+    Visite,
+    COD (id)
+}
+entity VISITATORI {
+    Password,
+    Tipologia,
+    Username (id)
+}
+entity VALUTAZIONI {
+    Commento,
+    ID (id),
+    Punteggio
+}
+entity PRESENZE {
+    Tipologia_utente,
+    Orario_entrata,
+    Orario_uscita,
+    Data,
+    COD (id)
+}
+entity GUIDE_AUTORIZZATE {
+    Cognome,
+    Nome,
+    Media_valutazione,
+    COD (id)
+}
+entity ITINERARI {
+    ID (id),
+    Media_valutazione,
+    Numero_guide_abilitate,
+    Tempo_stimato,
+    Modalita_percorrenza,
+    Punto_partenza,
+    Livello_difficolta
+}
+entity TOUR_PROGRAMMATI {
+    Num_massimo_partecipanti,
+    Orario (id),
+    Stato,
+    Anno
+}
+entity STRUTTURE_RICETTIVE {
+    Nome_struttura,
+    Indirizzo,
+    Adesione_CETS,
+    Disponibilita_parcheggi,
+    Scuola,
+    Gruppi,
+    Email,
+    Num_telefono,
+    ID (id)
+}
+entity NOTIZIE {
+    Data,
+    Foto,
+    Testo,
+    COD (id)
+}
+entity RICHIESTE_PRENOTAZIONE {
+    Data_inizio_soggiorno,
+    Data_fine_soggiorno,
+    num_ospiti,
+    Stato_accettazione,
+    ID (id)
+}
+entity CERTIFICAZIONI_POSSEDUTE {
+    Nome_certificazione (id)
+}
+entity SERVIZI {
+    Nome_servizio (id)
+}
+entity TRATTAMENTI_DISPONIBILI {
+    Nome_trattamenti (id)
+}
+entity IMPEGNI_ECOLOGICI {
+    Nome_impegno (id)
+}
+entity LICENZE {
+    Nome_licenza (id)
+}
+entity SEGNALETICA {
+    Tipo_segnaletica,
+    ID (id)
+}
+
+/* Relationships */
+relationship FORNISCE_INFORMAZIONI (
+    PARCHI: zero..many,
+    CENTRI_VISITA: one..one
+)
+relationship CONTENGONO (
+    PARCHI: zero..many,
+    STRUTTURE_RICETTIVE: one..many
+)
+relationship EFFETTUANO (
+    VISITATORI: zero..many,
+    TOUR_PROGRAMMATI: one..many
+)
+relationship RILEVA (
+    PRESENZE: one..one,
+    VISITATORI: zero..many
+)
+relationship VENGONO_VALUTATE (
+    VALUTAZIONI: one..one,
+    GUIDE_AUTORIZZATE: zero..many
+)
+relationship ORGANIZZANO (
+    GUIDE_AUTORIZZATE: one..many,
+    TOUR_PROGRAMMATI: one..many
+)
+relationship ABILITATE (
+    ITINERARI: zero..many,
+    GUIDE_AUTORIZZATE: one..many
+)
+relationship INFORMANO (
+    NOTIZIE: one..many,
+    PARCHI: zero..many
+)
+relationship TRACCIA (
+    PARCHI: zero..many,
+    PRESENZE: one..one
+)
+relationship VALUTANO (
+    VISITATORI: zero..many,
+    VALUTAZIONI: one..one
+)
+relationship VALUTATI (
+    ITINERARI: zero..many,
+    VALUTAZIONI: one..one
+)
+relationship SI_POSSONO_CONSULTARE (
+    PARCHI: one..many,
+    ITINERARI: zero..many
+)
+relationship INVIA (
+    VISITATORI: zero..many,
+    RICHIESTE_PRENOTAZIONE: zero..many
+)
+relationship ALLOGGIANO (
+    STRUTTURE_RICETTIVE: zero..many,
+    VISITATORI: zero..many
+)
+relationship SEGUONO (
+    TOUR_PROGRAMMATI: one..one,
+    ITINERARI: zero..many
+)
+relationship SEGUE (
+    STRUTTURE_RICETTIVE: zero..many,
+    IMPEGNI_ECOLOGICI: zero..many
+)
+relationship OFFRE (
+    STRUTTURE_RICETTIVE: one..many,
+    SERVIZI: one..many
+)
+relationship ADOTTANO (
+    TRATTAMENTI_DISPONIBILI: one..many,
+    STRUTTURE_RICETTIVE: one..many
+)
+relationship EROGANO (
+    CENTRI_VISITA: one..many,
+    SERVIZI: one..many
+)
+relationship CONTIENE (
+    SEGNALETICA: one..many,
+    ITINERARI: zero..many
+)
+relationship POSSIEDONO (
+    GUIDE_AUTORIZZATE: one..many,
+    LICENZE: zero..many
+)
+relationship DISPONE_DI (
+    CERTIFICAZIONI_POSSEDUTE: zero..many,
+    PARCHI: zero..many
+)

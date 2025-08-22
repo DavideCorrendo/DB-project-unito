@@ -1,0 +1,318 @@
+-- DDL - Sistema Gestione Parchi
+
+-- =====================================================
+-- CREAZIONE TABELLE PRINCIPALI
+-- =====================================================
+
+CREATE TABLE PARCHI (
+    ID INTEGER PRIMARY KEY,
+    Tipologia VARCHAR(20) NOT NULL CHECK (Tipologia IN ('parco nazionale', 'riserva naturale')),
+    Ente_Gestore VARCHAR(50) NOT NULL CHECK (Ente_Gestore IN ('Ministero dell''Ambiente', 'regione', 'provincia', 'comune', 'associazione', 'ente di gestione di aree protette', 'privato')),
+    Regione VARCHAR(25) NOT NULL CHECK (Regione IN ('Piemonte', 'Valle d''Aosta', 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna', 'Toscana', 'Umbria', 'Marche', 'Lazio', 'Abruzzo', 'Molise', 'Campania', 'Puglia', 'Basilicata', 'Calabria', 'Sicilia', 'Sardegna')),
+    Superficie_terrestre DECIMAL(10,2) NOT NULL CHECK (Superficie_terrestre > 0),
+    Nome_parco VARCHAR(100) NOT NULL,
+    Superficie_marina DECIMAL(10,2) CHECK (Superficie_marina >= 0),
+    Provvedimento_istitutivo TEXT,
+    Km_costa DECIMAL(8,2) CHECK (Km_costa >= 0),
+    CONSTRAINT chk_superficie_costa CHECK ((Km_costa = 0 AND Superficie_marina = 0) OR (Km_costa > 0 AND Superficie_marina > 0))
+);
+
+CREATE TABLE VISITATORI (
+    Username VARCHAR(50) PRIMARY KEY,
+    Password VARCHAR(100) NOT NULL,
+    Tipologia VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE GUIDE_AUTORIZZATE (
+    COD INTEGER PRIMARY KEY,
+    Cognome VARCHAR(50) NOT NULL,
+    Nome VARCHAR(50) NOT NULL,
+    Media_valutazione DECIMAL(2,1) CHECK (Media_valutazione >= 1 AND Media_valutazione <= 5)
+);
+
+CREATE TABLE ITINERARI (
+    ID INTEGER PRIMARY KEY,
+    Media_valutazione DECIMAL(2,1) CHECK (Media_valutazione >= 1 AND Media_valutazione <= 5),
+    Numero_guide_abilitate INTEGER NOT NULL CHECK (Numero_guide_abilitate >= 1),
+    Tempo_stimato INTEGER NOT NULL CHECK (Tempo_stimato > 0),
+    Modalita_percorrenza VARCHAR(20) NOT NULL,
+    Punto_partenza VARCHAR(100) NOT NULL,
+    Livello_difficolta VARCHAR(20) NOT NULL,
+    ID_parco INTEGER NOT NULL,
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE CENTRI_VISITA (
+    COD INTEGER PRIMARY KEY,
+    Orario_apertura TIME NOT NULL,
+    Luogo VARCHAR(100) NOT NULL,
+    Orario_chiusura TIME NOT NULL CHECK (Orario_chiusura > Orario_apertura),
+    Nome_centro VARCHAR(100) NOT NULL,
+    Email VARCHAR(100),
+    Num_telefono VARCHAR(20),
+    Percorsi TEXT,
+    Visite TEXT,
+    ID_parco INTEGER NOT NULL,
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE TOUR_PROGRAMMATI (
+    Orario TIME,
+    Anno INTEGER,
+    Num_massimo_partecipanti INTEGER NOT NULL CHECK (Num_massimo_partecipanti > 0),
+    Stato VARCHAR(20) NOT NULL,
+    COD_guida INTEGER NOT NULL,
+    ID_itinerario INTEGER NOT NULL,
+    PRIMARY KEY (Orario, Anno),
+    FOREIGN KEY (COD_guida) REFERENCES GUIDE_AUTORIZZATE(COD),
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID)
+);
+
+CREATE TABLE STRUTTURE_RICETTIVE (
+    ID INTEGER PRIMARY KEY,
+    Nome_struttura VARCHAR(100) NOT NULL,
+    Indirizzo VARCHAR(200) NOT NULL,
+    Adesione_CETS BOOLEAN,
+    Disponibilita_parcheggi BOOLEAN,
+    Scuola BOOLEAN,
+    Gruppi BOOLEAN,
+    Email VARCHAR(100),
+    Num_telefono VARCHAR(20),
+    ID_parco INTEGER NOT NULL,
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE NOTIZIE (
+    COD INTEGER PRIMARY KEY,
+    Data DATE NOT NULL CHECK (Data <= CURRENT_DATE),
+    Foto TEXT,
+    Testo TEXT NOT NULL,
+    ID_parco INTEGER NOT NULL,
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE RICHIESTE_PRENOTAZIONE (
+    ID INTEGER PRIMARY KEY,
+    Data_inizio_soggiorno DATE NOT NULL CHECK (Data_inizio_soggiorno >= CURRENT_DATE),
+    Data_fine_soggiorno DATE NOT NULL,
+    Num_ospiti INTEGER NOT NULL CHECK (Num_ospiti > 0),
+    Stato_accettazione VARCHAR(20) NOT NULL,
+    Username VARCHAR(50) NOT NULL,
+    ID_struttura INTEGER NOT NULL,
+    CONSTRAINT chk_date_soggiorno CHECK (Data_fine_soggiorno > Data_inizio_soggiorno),
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
+    FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID)
+);
+
+CREATE TABLE PRESENZE (
+    COD INTEGER PRIMARY KEY,
+    Tipologia_utente VARCHAR(20) NOT NULL,
+    Orario_entrata TIME NOT NULL,
+    Orario_uscita TIME NOT NULL CHECK (Orario_uscita >= Orario_entrata),
+    Data DATE NOT NULL,
+    Username VARCHAR(50) NOT NULL,
+    ID_parco INTEGER NOT NULL,
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE VALUTAZIONI (
+    ID INTEGER PRIMARY KEY,
+    Commento TEXT,
+    Punteggio INTEGER NOT NULL CHECK (Punteggio IN (1, 2, 3, 4, 5)),
+    Username VARCHAR(50) NOT NULL,
+    COD_guida INTEGER NOT NULL,
+    ID_itinerario INTEGER NOT NULL,
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
+    FOREIGN KEY (COD_guida) REFERENCES GUIDE_AUTORIZZATE(COD),
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID)
+);
+
+CREATE TABLE SEGNALETICA (
+    ID INTEGER PRIMARY KEY,
+    Tipo_segnaletica VARCHAR(50) NOT NULL,
+    ID_itinerario INTEGER NOT NULL,
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID)
+);
+
+-- =====================================================
+-- TABELLE PER DOMINI
+-- =====================================================
+
+CREATE TABLE CERTIFICAZIONI_POSSEDUTE (
+    Nome_certificazione VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE SERVIZI (
+    Nome_servizio VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE TRATTAMENTI_DISPONIBILI (
+    Nome_trattamenti VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE IMPEGNI_ECOLOGICI (
+    Nome_impegno VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE LICENZE (
+    Nome_licenza VARCHAR(50) PRIMARY KEY
+);
+
+-- =====================================================
+-- TABELLE ASSOCIAZIONI MOLTI-A-MOLTI
+-- =====================================================
+
+CREATE TABLE EFFETTUANO (
+    Username VARCHAR(50),
+    Orario TIME,
+    Anno INTEGER,
+    Data_prenotazione DATE,
+    PRIMARY KEY (Username, Orario, Anno),
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
+    FOREIGN KEY (Orario, Anno) REFERENCES TOUR_PROGRAMMATI(Orario, Anno)
+);
+
+CREATE TABLE ABILITATE (
+    ID_itinerario INTEGER,
+    COD_guida INTEGER,
+    PRIMARY KEY (ID_itinerario, COD_guida),
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID),
+    FOREIGN KEY (COD_guida) REFERENCES GUIDE_AUTORIZZATE(COD)
+);
+
+CREATE TABLE ALLOGGIANO (
+    ID_struttura INTEGER,
+    Username VARCHAR(50),
+    PRIMARY KEY (ID_struttura, Username),
+    FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID),
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username)
+);
+
+CREATE TABLE SEGUE (
+    ID_struttura INTEGER,
+    Nome_impegno VARCHAR(50),
+    PRIMARY KEY (ID_struttura, Nome_impegno),
+    FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID),
+    FOREIGN KEY (Nome_impegno) REFERENCES IMPEGNI_ECOLOGICI(Nome_impegno)
+);
+
+CREATE TABLE OFFRE (
+    ID_struttura INTEGER,
+    Nome_servizio VARCHAR(50),
+    PRIMARY KEY (ID_struttura, Nome_servizio),
+    FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID),
+    FOREIGN KEY (Nome_servizio) REFERENCES SERVIZI(Nome_servizio)
+);
+
+CREATE TABLE ADOTTANO (
+    Nome_trattamenti VARCHAR(50),
+    ID_struttura INTEGER,
+    PRIMARY KEY (Nome_trattamenti, ID_struttura),
+    FOREIGN KEY (Nome_trattamenti) REFERENCES TRATTAMENTI_DISPONIBILI(Nome_trattamenti),
+    FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID)
+);
+
+CREATE TABLE EROGANO (
+    COD_centro INTEGER,
+    Nome_servizio VARCHAR(50),
+    PRIMARY KEY (COD_centro, Nome_servizio),
+    FOREIGN KEY (COD_centro) REFERENCES CENTRI_VISITA(COD),
+    FOREIGN KEY (Nome_servizio) REFERENCES SERVIZI(Nome_servizio)
+);
+
+CREATE TABLE POSSIEDONO (
+    COD_guida INTEGER,
+    Nome_licenza VARCHAR(50),
+    PRIMARY KEY (COD_guida, Nome_licenza),
+    FOREIGN KEY (COD_guida) REFERENCES GUIDE_AUTORIZZATE(COD),
+    FOREIGN KEY (Nome_licenza) REFERENCES LICENZE(Nome_licenza)
+);
+
+CREATE TABLE DISPONE_DI (
+    Nome_certificazione VARCHAR(50),
+    ID_parco INTEGER,
+    PRIMARY KEY (Nome_certificazione, ID_parco),
+    FOREIGN KEY (Nome_certificazione) REFERENCES CERTIFICAZIONI_POSSEDUTE(Nome_certificazione),
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE ORGANIZZANO (
+    COD_guida INTEGER,
+    Orario TIME,
+    Anno INTEGER,
+    PRIMARY KEY (COD_guida, Orario, Anno),
+    FOREIGN KEY (COD_guida) REFERENCES GUIDE_AUTORIZZATE(COD),
+    FOREIGN KEY (Orario, Anno) REFERENCES TOUR_PROGRAMMATI(Orario, Anno)
+);
+
+CREATE TABLE INFORMANO (
+    COD_notizie INTEGER,
+    ID_parco INTEGER,
+    PRIMARY KEY (COD_notizie, ID_parco),
+    FOREIGN KEY (COD_notizie) REFERENCES NOTIZIE(COD),
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID)
+);
+
+CREATE TABLE INVIA (
+    Username VARCHAR(50),
+    ID_richiesta INTEGER,
+    PRIMARY KEY (Username, ID_richiesta),
+    FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
+    FOREIGN KEY (ID_richiesta) REFERENCES RICHIESTE_PRENOTAZIONE(ID)
+);
+
+CREATE TABLE SI_POSSONO_CONSULTARE (
+    ID_parco INTEGER,
+    ID_itinerario INTEGER,
+    PRIMARY KEY (ID_parco, ID_itinerario),
+    FOREIGN KEY (ID_parco) REFERENCES PARCHI(ID),
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID)
+);
+
+CREATE TABLE CONTIENE (
+    ID_segnaletica INTEGER,
+    ID_itinerario INTEGER,
+    PRIMARY KEY (ID_segnaletica, ID_itinerario),
+    FOREIGN KEY (ID_segnaletica) REFERENCES SEGNALETICA(ID),
+    FOREIGN KEY (ID_itinerario) REFERENCES ITINERARI(ID)
+);
+
+-- =====================================================
+-- INSERIMENTO DATI DI ESEMPIO PER DOMINI
+-- =====================================================
+
+INSERT INTO CERTIFICAZIONI_POSSEDUTE (Nome_certificazione) VALUES 
+('CETS'),
+('IUCN green list');
+
+INSERT INTO SERVIZI (Nome_servizio) VALUES 
+('Ristorante'),
+('Bar'),
+('Noleggio biciclette'),
+('Visite guidate'),
+('Shop souvenir'),
+('Parcheggio'),
+('Wi-Fi'),
+('Area picnic');
+
+INSERT INTO TRATTAMENTI_DISPONIBILI (Nome_trattamenti) VALUES 
+('Raccolta differenziata'),
+('Energia rinnovabile'),
+('Prodotti biologici'),
+('Riduzione sprechi'),
+('Compostaggio');
+
+INSERT INTO IMPEGNI_ECOLOGICI (Nome_impegno) VALUES 
+('Riduzione emissioni CO2'),
+('Utilizzo energia rinnovabile'),
+('Gestione sostenibile rifiuti'),
+('Promozione mobilità sostenibile'),
+('Educazione ambientale');
+
+INSERT INTO LICENZE (Nome_licenza) VALUES 
+('Guida ambientale escursionistica'),
+('Accompagnatore naturalistico'),
+('Guida speleologica'),
+('Istruttore di canoa'),
+('Guida alpina');
