@@ -1,4 +1,6 @@
--- DDL - Sistema Gestione Parchi
+BEGIN;
+
+-- DDL - Sistema Gestione Parchi (senza business rules)
 
 -- =====================================================
 -- CREAZIONE TABELLE PRINCIPALI
@@ -6,15 +8,14 @@
 
 CREATE TABLE PARCHI (
     ID INTEGER PRIMARY KEY,
-    Tipologia VARCHAR(20) NOT NULL CHECK (Tipologia IN ('parco nazionale', 'riserva naturale')),
-    Ente_Gestore VARCHAR(50) NOT NULL CHECK (Ente_Gestore IN ('Ministero dell''Ambiente', 'regione', 'provincia', 'comune', 'associazione', 'ente di gestione di aree protette', 'privato')),
-    Regione VARCHAR(25) NOT NULL CHECK (Regione IN ('Piemonte', 'Valle d''Aosta', 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna', 'Toscana', 'Umbria', 'Marche', 'Lazio', 'Abruzzo', 'Molise', 'Campania', 'Puglia', 'Basilicata', 'Calabria', 'Sicilia', 'Sardegna')),
-    Superficie_terrestre DECIMAL(10,2) NOT NULL CHECK (Superficie_terrestre > 0),
+    Tipologia VARCHAR(20) NOT NULL,
+    Ente_Gestore VARCHAR(50) NOT NULL,
+    Regione VARCHAR(25) NOT NULL,
+    Superficie_terrestre DECIMAL(10,2) NOT NULL,
     Nome_parco VARCHAR(100) NOT NULL,
-    Superficie_marina DECIMAL(10,2) CHECK (Superficie_marina >= 0),
+    Superficie_marina DECIMAL(10,2),
     Provvedimento_istitutivo TEXT,
-    Km_costa DECIMAL(8,2) CHECK (Km_costa >= 0),
-    CONSTRAINT chk_superficie_costa CHECK ((Km_costa = 0 AND Superficie_marina = 0) OR (Km_costa > 0 AND Superficie_marina > 0))
+    Km_costa DECIMAL(8,2)
 );
 
 CREATE TABLE VISITATORI (
@@ -27,14 +28,14 @@ CREATE TABLE GUIDE_AUTORIZZATE (
     COD INTEGER PRIMARY KEY,
     Cognome VARCHAR(50) NOT NULL,
     Nome VARCHAR(50) NOT NULL,
-    Media_valutazione DECIMAL(2,1) CHECK (Media_valutazione >= 1 AND Media_valutazione <= 5)
+    Media_valutazione DECIMAL(2,1)
 );
 
 CREATE TABLE ITINERARI (
     ID INTEGER PRIMARY KEY,
-    Media_valutazione DECIMAL(2,1) CHECK (Media_valutazione >= 1 AND Media_valutazione <= 5),
-    Numero_guide_abilitate INTEGER NOT NULL CHECK (Numero_guide_abilitate >= 1),
-    Tempo_stimato INTEGER NOT NULL CHECK (Tempo_stimato > 0),
+    Media_valutazione DECIMAL(2,1),
+    Numero_guide_abilitate INTEGER NOT NULL,
+    Tempo_stimato INTEGER NOT NULL,
     Modalita_percorrenza VARCHAR(20) NOT NULL,
     Punto_partenza VARCHAR(100) NOT NULL,
     Livello_difficolta VARCHAR(20) NOT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE CENTRI_VISITA (
     COD INTEGER PRIMARY KEY,
     Orario_apertura TIME NOT NULL,
     Luogo VARCHAR(100) NOT NULL,
-    Orario_chiusura TIME NOT NULL CHECK (Orario_chiusura > Orario_apertura),
+    Orario_chiusura TIME NOT NULL,
     Nome_centro VARCHAR(100) NOT NULL,
     Email VARCHAR(100),
     Num_telefono VARCHAR(20),
@@ -59,7 +60,7 @@ CREATE TABLE CENTRI_VISITA (
 CREATE TABLE TOUR_PROGRAMMATI (
     Orario TIME,
     Anno INTEGER,
-    Num_massimo_partecipanti INTEGER NOT NULL CHECK (Num_massimo_partecipanti > 0),
+    Num_massimo_partecipanti INTEGER NOT NULL,
     Stato VARCHAR(20) NOT NULL,
     COD_guida INTEGER NOT NULL,
     ID_itinerario INTEGER NOT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE STRUTTURE_RICETTIVE (
 
 CREATE TABLE NOTIZIE (
     COD INTEGER PRIMARY KEY,
-    Data DATE NOT NULL CHECK (Data <= CURRENT_DATE),
+    Data DATE NOT NULL,
     Foto TEXT,
     Testo TEXT NOT NULL,
     ID_parco INTEGER NOT NULL,
@@ -93,13 +94,12 @@ CREATE TABLE NOTIZIE (
 
 CREATE TABLE RICHIESTE_PRENOTAZIONE (
     ID INTEGER PRIMARY KEY,
-    Data_inizio_soggiorno DATE NOT NULL CHECK (Data_inizio_soggiorno >= CURRENT_DATE),
+    Data_inizio_soggiorno DATE NOT NULL,
     Data_fine_soggiorno DATE NOT NULL,
-    Num_ospiti INTEGER NOT NULL CHECK (Num_ospiti > 0),
+    Num_ospiti INTEGER NOT NULL,
     Stato_accettazione VARCHAR(20) NOT NULL,
     Username VARCHAR(50) NOT NULL,
     ID_struttura INTEGER NOT NULL,
-    CONSTRAINT chk_date_soggiorno CHECK (Data_fine_soggiorno > Data_inizio_soggiorno),
     FOREIGN KEY (Username) REFERENCES VISITATORI(Username),
     FOREIGN KEY (ID_struttura) REFERENCES STRUTTURE_RICETTIVE(ID)
 );
@@ -108,7 +108,7 @@ CREATE TABLE PRESENZE (
     COD INTEGER PRIMARY KEY,
     Tipologia_utente VARCHAR(20) NOT NULL,
     Orario_entrata TIME NOT NULL,
-    Orario_uscita TIME NOT NULL CHECK (Orario_uscita >= Orario_entrata),
+    Orario_uscita TIME NOT NULL,
     Data DATE NOT NULL,
     Username VARCHAR(50) NOT NULL,
     ID_parco INTEGER NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE PRESENZE (
 CREATE TABLE VALUTAZIONI (
     ID INTEGER PRIMARY KEY,
     Commento TEXT,
-    Punteggio INTEGER NOT NULL CHECK (Punteggio IN (1, 2, 3, 4, 5)),
+    Punteggio INTEGER NOT NULL,
     Username VARCHAR(50) NOT NULL,
     COD_guida INTEGER NOT NULL,
     ID_itinerario INTEGER NOT NULL,
@@ -316,3 +316,5 @@ INSERT INTO LICENZE (Nome_licenza) VALUES
 ('Guida speleologica'),
 ('Istruttore di canoa'),
 ('Guida alpina');
+
+COMMIT;
